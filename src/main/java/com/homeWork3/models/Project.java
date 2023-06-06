@@ -19,7 +19,7 @@ public class Project {
     @Column(name = "project_title", nullable = false)
     private String projectTitle;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinTable(
             name = "project_employees",
             joinColumns = { @JoinColumn(name = "project_id") },

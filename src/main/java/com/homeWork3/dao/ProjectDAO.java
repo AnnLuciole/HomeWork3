@@ -6,8 +6,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
@@ -20,7 +18,9 @@ public class ProjectDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public void add(Project project) {
+    public void add(String projectTitle) {
+        Project project = new Project();
+        project.setProjectTitle(projectTitle);
         sessionFactory.getCurrentSession().persist(project);
         sessionFactory.getCurrentSession().flush();
     }

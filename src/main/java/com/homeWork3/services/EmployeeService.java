@@ -17,8 +17,8 @@ public class EmployeeService {
         this.employeeDAO = employeeDAO;
     }
 
-    public void add(Employee employee) {
-        employeeDAO.add(employee);
+    public void add(String employeeName) {
+        employeeDAO.add(employeeName);
     }
 
     public Employee select(int id) {

@@ -18,8 +18,11 @@ public class EmployeeDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public void add(Employee employee) {
+    public void add(String employeeName) {
+        Employee employee = new Employee();
+        employee.setEmployeeName(employeeName);
         sessionFactory.getCurrentSession().persist(employee);
+        sessionFactory.getCurrentSession().flush();
     }
 
     public Employee select(int id) {

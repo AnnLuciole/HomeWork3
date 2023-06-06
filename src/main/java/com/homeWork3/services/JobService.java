@@ -18,8 +18,8 @@ public class JobService {
         this.jobDAO = jobDAO;
     }
 
-    public void add(Job job) {
-        jobDAO.add(job);
+    public void add(String jobTitle) {
+        jobDAO.add(jobTitle);
     }
 
     public Job select(int id) {

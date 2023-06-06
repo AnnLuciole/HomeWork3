@@ -18,8 +18,8 @@ public class ProjectService {
         this.projectDAO = projectDAO;
     }
 
-    public void add(Project project) {
-        projectDAO.add(project);
+    public void add(String projectTitle) {
+        projectDAO.add(projectTitle);
     }
 
     public Project select(int id) {

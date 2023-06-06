@@ -2,15 +2,10 @@ package com.homeWork3.dao;
 
 import com.homeWork3.models.Employee;
 import com.homeWork3.models.Job;
-import com.homeWork3.models.Project;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
@@ -22,7 +17,9 @@ public class JobDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public void add(Job job) {
+    public void add(String jobTitle) {
+        Job job = new Job();
+        job.setJobTitle(jobTitle);
         sessionFactory.getCurrentSession().persist(job);
         sessionFactory.getCurrentSession().flush();
     }

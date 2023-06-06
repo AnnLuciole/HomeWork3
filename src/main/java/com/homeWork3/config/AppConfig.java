@@ -1,35 +1,28 @@
 package com.homeWork3.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
+@ComponentScan("com.homeWork3")
 @PropertySource("classpath:database.properties")
+@PropertySource("classpath:hibernate.properties")
 public class AppConfig {
 
     private final Environment env;
@@ -58,9 +51,13 @@ public class AppConfig {
         localSessionFactoryBean.setDataSource(dataSource());
         localSessionFactoryBean.setPackagesToScan("com.homeWork3.models");
         Properties properties = new Properties();
-        properties.setProperty("hibernate.show_sql", "true");
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        properties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+        properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+        properties.setProperty("hibernate.c3p0.min_size", env.getProperty("hibernate.c3p0.min_size"));
+        properties.setProperty("hibernate.c3p0.max_size", env.getProperty("hibernate.c3p0.max_size"));
+        properties.setProperty("hibernate.c3p0.timeout", env.getProperty("hibernate.c3p0.timeout"));
+        properties.setProperty("hibernate.c3p0.max_statements", env.getProperty("hibernate.c3p0.max_statements"));
         localSessionFactoryBean.setHibernateProperties(properties);
         return localSessionFactoryBean;
     }
@@ -70,5 +67,17 @@ public class AppConfig {
         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(getSessionFactory().getObject());
         return transactionManager;
+    }
+
+    @Bean
+    public View jsonTemplate() {
+        MappingJackson2JsonView view = new MappingJackson2JsonView();
+        view.setPrettyPrint(true);
+        return view;
+    }
+
+    @Bean
+    public ViewResolver viewResolver() {
+        return new BeanNameViewResolver();
     }
 }
