@@ -3,8 +3,6 @@ package com.homeWork3.controllers;
 import com.homeWork3.models.Job;
 import com.homeWork3.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,41 +17,25 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    @GetMapping("/job")
-    public List<Job> index() {
+    @GetMapping("/job/")
+    public List<Job> selectAll() {
         return jobService.selectAll();
     }
 
     @GetMapping("/job/{id}")
-    public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("job", jobService.select(id));
-        return "job/show";
+    public Job select(@PathVariable("id") int id) {
+        return jobService.select(id);
     }
 
-    @PostMapping("/job/new")
-    public String newJob(@ModelAttribute("job") Job job) {
-        return "job/new";
-    }
-
-    @PostMapping()
-    public String create(@ModelAttribute("job") Job job,
-                         BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return "job/new";
-
+    @PostMapping("/job/add")
+    public String addJob(Job job) {
         jobService.add(job);
-        return "redirect:/job";
+        return "Job was added.";
     }
 
-    @GetMapping("/job/{id}/edit")
-    public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("job", jobService.select(id));
-        return "job/edit";
-    }
-
-    @DeleteMapping("/job/{id}")
+    @DeleteMapping("/job/{id}/delete")
     public String delete(@PathVariable("id") int id) {
         jobService.delete(id);
-        return "redirect:/job";
+        return "Job was deleted.";
     }
 }

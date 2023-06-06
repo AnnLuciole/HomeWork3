@@ -3,14 +3,19 @@ package com.homeWork3.services;
 import com.homeWork3.dao.EmployeeDAO;
 import com.homeWork3.models.Employee;
 import com.homeWork3.models.Project;
-import org.hibernate.Transaction;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-@Component
+@Service
+@Transactional
 public class EmployeeService {
 
-    private final EmployeeDAO employeeDAO = new EmployeeDAO();
+    private final EmployeeDAO employeeDAO;
+
+    public EmployeeService(EmployeeDAO employeeDAO){
+        this.employeeDAO = employeeDAO;
+    }
 
     public void add(Employee employee) {
         employeeDAO.add(employee);

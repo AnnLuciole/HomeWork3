@@ -1,13 +1,12 @@
 package com.homeWork3.config;
 
-import com.homeWork3.config.listener.AppContextListener;
-import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 public class ApplicationInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -17,12 +16,12 @@ public class ApplicationInit extends AbstractAnnotationConfigDispatcherServletIn
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {AppConfig.class};
+        return null;
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {MvcConfig.class};
+        return new Class[] {AppConfig.class};
     }
 
     @Override
@@ -32,14 +31,12 @@ public class ApplicationInit extends AbstractAnnotationConfigDispatcherServletIn
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        super.onStartup(servletContext);
+        AnnotationConfigWebApplicationContext appContext = new AnnotationConfigWebApplicationContext();
+        appContext.register(AppConfig.class);
 
-        FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("characterEncodingFilter",
-                new CharacterEncodingFilter("UTF-8", true, true));
-        filterRegistration.addMappingForUrlPatterns(null, false, "/*");
-        filterRegistration = servletContext.addFilter("hiddenHttpMethodFilter", new HiddenHttpMethodFilter() );
-        filterRegistration.addMappingForUrlPatterns(null, false, "/*");
-
-        servletContext.addListener(AppContextListener.class);
+        ServletRegistration.Dynamic dispatcher = servletContext.addServlet(
+                "SpringDispatcher", new DispatcherServlet(appContext));
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("*.jsp");
     }
 }

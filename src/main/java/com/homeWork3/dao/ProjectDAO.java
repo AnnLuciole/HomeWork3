@@ -2,6 +2,8 @@ package com.homeWork3.dao;
 
 import com.homeWork3.models.Employee;
 import com.homeWork3.models.Project;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -11,30 +13,34 @@ import java.util.List;
 @Repository
 public class ProjectDAO {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    public ProjectDAO(SessionFactory sessionFactory){
+        this.sessionFactory = sessionFactory;
+    }
 
     public void add(Project project) {
-        entityManager.persist(project);
-        entityManager.flush();
+        sessionFactory.getCurrentSession().persist(project);
+        sessionFactory.getCurrentSession().flush();
     }
 
     public Project select(int id) {
-        return entityManager.find(Project.class, id);
+        return sessionFactory.getCurrentSession().find(Project.class, id);
     }
 
     public List<Project> selectAll() {
-        return entityManager.createQuery("from Project", Project.class).getResultList();
+        return sessionFactory.getCurrentSession().createQuery("from Project", Project.class).getResultList();
     }
 
     public List<Employee> selectAllEmployeesByProjectId(int id) {
-        return entityManager.find(Project.class, id).getAllEmployees();
+        return sessionFactory.getCurrentSession().find(Project.class, id).getAllEmployees();
     }
 
     public Project delete(int id) {
         Project project = select(id);
-        entityManager.remove(project);
-        entityManager.flush();
+        sessionFactory.getCurrentSession().remove(project);
+        sessionFactory.getCurrentSession().flush();
         return project;
     }
 }

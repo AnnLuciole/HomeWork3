@@ -21,7 +21,4 @@ public class Job {
 
     @OneToMany(mappedBy = "job")
     private List<Employee> allEmployees = new ArrayList<>();
-
-    public Job() {
-    }
 }
