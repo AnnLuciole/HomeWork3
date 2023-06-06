@@ -19,9 +19,6 @@ public class Job {
     @Column(name = "job_title", nullable = false)
     private String jobTitle;
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job", fetch = FetchType.EAGER)
     private List<Employee> allEmployees = new ArrayList<>();
-
-    public Job() {
-    }
 }

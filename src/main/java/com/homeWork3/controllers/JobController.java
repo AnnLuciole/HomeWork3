@@ -3,13 +3,14 @@ package com.homeWork3.controllers;
 import com.homeWork3.models.Job;
 import com.homeWork3.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/job")
 public class JobController {
 
     private final JobService jobService;
@@ -19,41 +20,25 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    @GetMapping("/job")
-    public List<Job> index() {
-        return jobService.selectAll();
+    @GetMapping("/")
+    public ResponseEntity<List<Job>> selectAll() {
+        return new ResponseEntity<>(jobService.selectAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/job/{id}")
-    public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("job", jobService.select(id));
-        return "job/show";
+    @GetMapping("/{id}")
+    public ResponseEntity<Job> select(@PathVariable("id") int id) {
+        return new ResponseEntity<Job>(jobService.select(id), HttpStatus.OK);
     }
 
-    @PostMapping("/job/new")
-    public String newJob(@ModelAttribute("job") Job job) {
-        return "job/new";
+    @PostMapping(value = "/add")
+    @ResponseStatus(HttpStatus.OK)
+    public void addJob(@RequestBody String jobTitle) {
+        jobService.add(jobTitle);
     }
 
-    @PostMapping()
-    public String create(@ModelAttribute("job") Job job,
-                         BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return "job/new";
-
-        jobService.add(job);
-        return "redirect:/job";
-    }
-
-    @GetMapping("/job/{id}/edit")
-    public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("job", jobService.select(id));
-        return "job/edit";
-    }
-
-    @DeleteMapping("/job/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
         jobService.delete(id);
-        return "redirect:/job";
+        return "Job was deleted.";
     }
 }

@@ -3,17 +3,23 @@ package com.homeWork3.services;
 import com.homeWork3.dao.JobDAO;
 import com.homeWork3.models.Employee;
 import com.homeWork3.models.Job;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Component
+@Service
+@Transactional
 public class JobService {
 
-    private final JobDAO jobDAO = new JobDAO();
+    private final JobDAO jobDAO;
 
-    public void add(Job job) {
-        jobDAO.add(job);
+    public JobService(JobDAO jobDAO) {
+        this.jobDAO = jobDAO;
+    }
+
+    public void add(String jobTitle) {
+        jobDAO.add(jobTitle);
     }
 
     public Job select(int id) {

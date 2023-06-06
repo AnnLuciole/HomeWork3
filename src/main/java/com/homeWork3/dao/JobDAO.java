@@ -2,41 +2,44 @@ package com.homeWork3.dao;
 
 import com.homeWork3.models.Employee;
 import com.homeWork3.models.Job;
-import com.homeWork3.models.Project;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 public class JobDAO {
-    @PersistenceContext
-    private EntityManager entityManager;
+    private SessionFactory sessionFactory;
 
-    public void add(Job job) {
-        entityManager.persist(job);
-        entityManager.flush();
+    @Autowired
+    public JobDAO(SessionFactory sessionFactory){
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void add(String jobTitle) {
+        Job job = new Job();
+        job.setJobTitle(jobTitle);
+        sessionFactory.getCurrentSession().persist(job);
+        sessionFactory.getCurrentSession().flush();
     }
 
     public Job select(int id) {
-        return entityManager.find(Job.class, id);
+        return sessionFactory.getCurrentSession().find(Job.class, id);
     }
 
     public List<Job> selectAll() {
-        return entityManager.createQuery("from Job", Job.class).getResultList();
+        return sessionFactory.getCurrentSession().createQuery("from Job", Job.class).getResultList();
     }
 
     public List<Employee> selectAllEmployeesByJobId(int id) {
-        return entityManager.find(Job.class, id).getAllEmployees();
+        return sessionFactory.getCurrentSession().find(Job.class, id).getAllEmployees();
     }
 
     public Job delete(int id) {
         Job job = select(id);
-        entityManager.remove(job);
-        entityManager.flush();
+        sessionFactory.getCurrentSession().remove(job);
+        sessionFactory.getCurrentSession().flush();
         return job;
     }
 }

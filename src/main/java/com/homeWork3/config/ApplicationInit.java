@@ -10,7 +10,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 public class ApplicationInit extends AbstractAnnotationConfigDispatcherServletInitializer {
-
     public ApplicationInit() {
         super();
     }
@@ -22,7 +21,7 @@ public class ApplicationInit extends AbstractAnnotationConfigDispatcherServletIn
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {MvcConfig.class};
+        return new Class[] {AppConfig.class};
     }
 
     @Override
